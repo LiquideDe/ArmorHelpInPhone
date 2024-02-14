@@ -1,0 +1,9 @@
+{
+    "name": "Дробовик",
+    "maxClip": 8,
+    "semiAutoFire": 0,
+    "autoFire": 0,
+    "type": 5,
+    "totalAmmo": 24,
+    "singleFire": true
+}

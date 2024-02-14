@@ -1,0 +1,9 @@
+{
+    "name": "Стаб-револьвер",
+    "maxClip": 6,
+    "semiAutoFire": 0,
+    "autoFire": 0,
+    "type": 0,
+    "totalAmmo": 18,
+    "singleFire": true
+}

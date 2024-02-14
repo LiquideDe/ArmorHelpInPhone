@@ -1,0 +1,11 @@
+{
+    "head": 2,
+    "rightHand": 3,
+    "leftHand": 3,
+    "body": 3,
+    "rightLeg": 3,
+    "leftLeg": 3,
+    "wounds": 11,
+    "bToughness": 3,
+    "bWillPower": 3
+}

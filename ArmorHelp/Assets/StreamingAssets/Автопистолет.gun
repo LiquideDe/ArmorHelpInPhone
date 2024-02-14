@@ -1,0 +1,9 @@
+{
+    "name": "Автопистолет",
+    "maxClip": 18,
+    "semiAutoFire": 0,
+    "autoFire": 6,
+    "type": 1,
+    "totalAmmo": 54,
+    "singleFire": true
+}

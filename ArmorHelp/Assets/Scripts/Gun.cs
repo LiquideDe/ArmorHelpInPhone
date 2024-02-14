@@ -7,7 +7,7 @@ using System.Linq;
 
 public class Gun : MonoBehaviour
 {
-    int ammoClip, maxClip, totalAmmo, shortFire, longFire, arrayBullet;
+    int ammoClip, maxClip, totalAmmo, semiAutoFire, autoFire, arrayBullet;
     bool singleFire;
     AudioClip shootSound;
     AudioClip reloadSound;
@@ -21,20 +21,20 @@ public class Gun : MonoBehaviour
     List<MyToggle> rof = new List<MyToggle>();
 
 
-    public void SetGun(string name, string totalAmmo, string maxClip, bool singleFire, string shortFire, string longFire, AudioClip shootSound, AudioClip reloadSound, AudioClip emptySound)
+    public void SetGun(SaveLoadGun loadGun, AudioClip shootSound, AudioClip reloadSound, AudioClip emptySound)
     {
         gameObject.SetActive(true);
-        nameText.text = name;
-        int.TryParse(totalAmmo, out this.totalAmmo);
-        int.TryParse(maxClip, out this.maxClip);
-        int.TryParse(shortFire, out this.shortFire);
-        int.TryParse(longFire, out this.longFire);
+        nameText.text = loadGun.name;
+        totalAmmo = loadGun.totalAmmo;
+        maxClip = loadGun.maxClip;
+        semiAutoFire = loadGun.semiAutoFire;
+        autoFire = loadGun.autoFire;
         this.shootSound = shootSound;
         this.reloadSound = reloadSound;
         this.emptySound = emptySound;
         ammoClip = this.maxClip;
         UpdateText();
-        this.singleFire = singleFire;
+        singleFire = loadGun.singleFire;
         if (singleFire)
         {
             rof.Add(Instantiate(exampleToggle, toggleGroup.transform));
@@ -42,18 +42,18 @@ public class Gun : MonoBehaviour
             rof[^1].Id = 1;
             rof[^1].gameObject.SetActive(true);
         }
-        if (this.shortFire > 0)
+        if (this.semiAutoFire > 0)
         {
             rof.Add(Instantiate(exampleToggle, toggleGroup.transform));
             rof[^1].Text.text = "Полу автомат";
-            rof[^1].Id = this.shortFire;
+            rof[^1].Id = this.semiAutoFire;
             rof[^1].gameObject.SetActive(true);
         }
-        if(this.longFire > 0)
+        if(this.autoFire > 0)
         {
             rof.Add(Instantiate(exampleToggle, toggleGroup.transform));
             rof[^1].Text.text = "Автомат";
-            rof[^1].Id = this.longFire;
+            rof[^1].Id = this.autoFire;
             rof[^1].gameObject.SetActive(true);
         }
     }
@@ -91,11 +91,11 @@ public class Gun : MonoBehaviour
     public void Shoot()
     {
         arrayBullet = toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<MyToggle>().Id;
-        if(arrayBullet == shortFire)
+        if(arrayBullet == semiAutoFire)
         {
             InvokeRepeating("ShootSound", 0.1f, 0.16f);
         }
-        else if(arrayBullet == longFire)
+        else if(arrayBullet == autoFire)
         {
             InvokeRepeating("ShootSound", 0.1f, 0.13f);
         }
@@ -145,11 +145,11 @@ public class Gun : MonoBehaviour
 
     public void AddAmmo()
     {
-        int weapon = 0;
-        int.TryParse(inputFieldAmmo.text, out weapon);
-        totalAmmo += weapon;
+        int.TryParse(inputFieldAmmo.text, out int ammo);
+        totalAmmo += ammo;
         UpdateText();
         panelWithAmmo.SetActive(false);
         inputFieldAmmo.text = "";
     }
+
 }

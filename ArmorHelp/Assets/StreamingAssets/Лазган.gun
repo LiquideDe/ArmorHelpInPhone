@@ -1,0 +1,9 @@
+{
+    "name": "Лазган",
+    "maxClip": 60,
+    "semiAutoFire": 3,
+    "autoFire": 0,
+    "type": 3,
+    "totalAmmo": 180,
+    "singleFire": true
+}

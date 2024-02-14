@@ -7,30 +7,32 @@ using TMPro;
 public class Arsenal : MonoBehaviour
 {
     [SerializeField] Gun gun;
-    [SerializeField] GameObject listGuns;
-    [SerializeField] TMP_InputField inputName, inputTotalAmmo, inputClipAmmo, inputShort, inputLong;
-    [SerializeField] Toggle toggleSingle;
-    [SerializeField] TMP_Dropdown dropdown;
+    [SerializeField] GameObject listGuns;    
     [SerializeField] AudioClip[] gunShots;
     [SerializeField] AudioClip[] gunReloads;
     [SerializeField] AudioClip[] gunEmpty;
+    [SerializeField] NewGunPanel newGunPanel;
+    [SerializeField] ListGuns listNewGuns;
     private List<Gun> guns = new List<Gun>();
+    
 
-    public void ConfirmCreation()
+    public void ConfirmCreation(SaveLoadGun loadGun)
     {
-        if(inputName.text.Length > 0 && inputTotalAmmo.text.Length > 0 && inputClipAmmo.text.Length > 0)
-        {
-            guns.Add(Instantiate(gun, listGuns.transform));
-            guns[^1].SetGun(inputName.text, inputTotalAmmo.text, inputClipAmmo.text, toggleSingle.isOn, inputShort.text, inputLong.text,
-                gunShots[dropdown.value], gunReloads[dropdown.value], gunEmpty[dropdown.value]);
-            inputName.text = "";
-            inputTotalAmmo.text = "";
-            inputClipAmmo.text = "";
-            inputShort.text = "";
-            inputLong.text = "";
-        }
+        guns.Add(Instantiate(gun, listGuns.transform));
+        guns[^1].SetGun(loadGun, gunShots[loadGun.type], gunReloads[loadGun.type], gunEmpty[loadGun.type]);
+    }    
+
+    public void AddGun()
+    {
+        ListGuns list = Instantiate(listNewGuns, transform);
+        list.SetParams(ConfirmCreation, CreateGun);
+        
     }
 
-    
+    private void CreateGun()
+    {
+        NewGunPanel newGun = Instantiate(newGunPanel, transform);
+        newGun.SetParams(ConfirmCreation);        
+    }
     
 }

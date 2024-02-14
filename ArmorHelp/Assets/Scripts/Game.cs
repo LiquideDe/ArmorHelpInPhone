@@ -3,225 +3,121 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.IO;
+using System.Text;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField] TMP_InputField inputHead, inputRightHand, inputLeftHand, inputBody, inputLeftLeg, inputRightLeg, inputBonusToughness, inputPenitration, inputBonusWP;
-    [SerializeField] TMP_InputField inputPlace, inputDamage;
-    [SerializeField] GameObject panelDamage, panelWithText, panelForDamageItem, contentForDamageItems;
-    [SerializeField] TextMeshProUGUI textDamage, textWound;
-    [SerializeField] Toggle toggleIsWarp, toggleIsIgnoreArmor, toggleIsIgnoreToughness;
-    [SerializeField] DamageItem damageItemExample;
-    int head, rightHand, leftHand, body, rightLeg, leftLeg, toughness, willPower, penetration;
-    List<DamageItem> damageItems = new List<DamageItem>();
-    int[] placesTakeDamage = new int[6];
-    int wound = 5;
+    [SerializeField] TMP_InputField inputHead, inputRightHand, inputLeftHand, inputBody, inputLeftLeg, inputRightLeg, inputBonusToughness, inputBonusWP;
+    [SerializeField] TextMeshProUGUI textWound;
+    [SerializeField] PanelDamage panelDamageExample;
+    [SerializeField] PanelText panelText;
+    int wounds = 5;
+    SaveLoadArmor armor;
 
-    
-    public void TakeDamage()
-    {            
-        panelDamage.SetActive(true);
-    }
-
-    public void ConfirmDamage()
+    private void Start()
     {
-
-        panelDamage.SetActive(false);
-        panelWithText.SetActive(true);
-
-        int.TryParse(inputHead.text, out head);
-        int.TryParse(inputRightHand.text, out rightHand);
-        int.TryParse(inputLeftHand.text, out leftHand);
-        int.TryParse(inputBody.text, out body);
-        int.TryParse(inputRightLeg.text, out rightLeg);
-        int.TryParse(inputLeftLeg.text, out leftLeg);
-        int.TryParse(inputBonusToughness.text, out toughness);
-        int.TryParse(inputBonusWP.text, out willPower);
-
-        foreach(DamageItem item in damageItems)
+        if (Application.platform == RuntimePlatform.Android)
         {
-            if (item.Place < 10)
+            var info = new DirectoryInfo(Application.persistentDataPath);
+            var fileInfo = info.GetFiles("*.armor");
+            byte[] jsonByte = null;
+            foreach (FileInfo file in fileInfo)
             {
-                Damage(head, item, 0); //0 - голова
-            }
-            else if (item.Place > 10 && item.Place < 21)
-            {
-                Damage(rightHand, item, 1); //1 - правая рука
-            }
-            else if (item.Place > 20 && item.Place < 31)
-            {
-                Damage(leftHand, item, 2); //2 - левая рука
-            }
-            else if (item.Place > 30 && item.Place < 71)
-            {
-                Damage(body, item, 3);//3 - тело
-            }
-            else if (item.Place > 70 && item.Place < 86)
-            {
-                Damage(rightLeg, item, 4);//4 - правая нога
-            }
-            else if (item.Place > 85 && item.Place < 101)
-            {
-                Damage(leftLeg, item, 5);//5 - левая нога
+                jsonByte = File.ReadAllBytes(file.FullName);
+                string jsonData = Encoding.UTF8.GetString(jsonByte);
+                armor = JsonUtility.FromJson<SaveLoadArmor>(jsonData);
+                LoadArmor();
             }
         }
-
-        inputPenitration.text = "";
-        SetFinalText();
-        CleanItems();
-    }
-
-    private void Damage(int armor, DamageItem item, int idPlace)
-    {
-        int damage = 0;
-        if (!item.IsIgnoreArmor && !item.IsIgnoreToughness && !item.IsWarp)
+        else
         {
-            
-            if (armor < item.Penetration)
+            var files = Directory.GetFiles($"{Application.dataPath}/StreamingAssets", "*.armor");
+            foreach (string path in files)
             {
-                damage = item.Damage - toughness;
+                string loadData = File.ReadAllText(path);
+                armor = JsonUtility.FromJson<SaveLoadArmor>(loadData);
+                LoadArmor();
             }
-            else
-            {
-                damage = item.Damage - (armor - item.Penetration + toughness);
-            }
-
-            
-        }
-        else if(item.IsIgnoreArmor && !item.IsIgnoreToughness && !item.IsWarp)
-        {
-            damage = item.Damage - toughness;
-        }
-        else if(!item.IsIgnoreArmor && item.IsIgnoreToughness && !item.IsWarp)
-        {
-            if (armor >= item.Penetration)
-                damage = item.Damage - (armor - item.Penetration);
-            else
-                damage = item.Damage;
-        }
-        else if(item.IsWarp)
-        {
-            damage = item.Damage - willPower;
-        }
-        else if (item.IsIgnoreArmor && item.IsIgnoreToughness && !item.IsWarp)
-        {
-            damage = item.Damage;
-        }
-
-        if (damage > 0)
-        {
-            placesTakeDamage[idPlace] += damage;
         }
     }
 
-    private void SetFinalText()
+    private void LoadArmor()
     {
-        int totalDamage = 0;
-        textDamage.text = "";
-        if (placesTakeDamage[0] > 0)
-        {
-            textDamage.text += $"Нанесено {placesTakeDamage[0]} урона в голову. \n";
-            totalDamage += placesTakeDamage[0];
-        }
-        if (placesTakeDamage[1] > 0)
-        {
-            textDamage.text += $"Нанесено {placesTakeDamage[1]} урона в правую руку. \n";
-            totalDamage += placesTakeDamage[1];
-        }
-        if (placesTakeDamage[2] > 0)
-        {
-            textDamage.text += $"Нанесено {placesTakeDamage[2]} урона в левую руку. \n";
-            totalDamage += placesTakeDamage[2];
-        }
-        if (placesTakeDamage[3] > 0)
-        {
-            textDamage.text += $"Нанесено {placesTakeDamage[3]} урона в тело. \n";
-            totalDamage += placesTakeDamage[3];
-        }
-        if (placesTakeDamage[4] > 0)
-        {
-            textDamage.text += $"Нанесено {placesTakeDamage[4]} урона в правую ногу. \n";
-            totalDamage += placesTakeDamage[4];
-        }
-        if (placesTakeDamage[5] > 0)
-        {
-            textDamage.text += $"Нанесено {placesTakeDamage[5]} урона в левую ногу. \n";
-            totalDamage += placesTakeDamage[5];
-        }
-        textDamage.text += $"Всего нанесено {totalDamage} урона";
+        inputHead.text = armor.head.ToString();
+        inputRightHand.text= armor.rightHand.ToString();
+        inputLeftHand.text= armor.leftHand.ToString();
+        inputBody.text= armor.body.ToString();
+        inputRightLeg.text= armor.rightLeg.ToString();
+        inputLeftLeg.text= armor.leftLeg.ToString();
+        inputBonusToughness.text= armor.bToughness.ToString();
+        inputBonusWP.text= armor.bWillPower.ToString();
+        wounds = armor.wounds;
+        textWound.text = $"{wounds}";
+    }
+    public void CalculateDamage()
+    {
+        //panelDamage.SetActive(true);    
+        ParseInputs();
+        var panelDamage = Instantiate(panelDamageExample, transform);
+        panelDamage.SetParams(armor, TakeDamage);
 
-        for(int i = 0; i < placesTakeDamage.Length; i++)
-        {
-            placesTakeDamage[i] = 0;
-        }
-
-        wound -= totalDamage;
-        textWound.text = $"{wound}";
     }
 
-    private void CleanItems()
+    private void TakeDamage(int damage, string text)
     {
-        foreach(DamageItem item in damageItems)
-        {
-            Destroy(item.gameObject);
-        }
-        damageItems.Clear();
-    }
-    public void AddMoreDamage()
-    {
-        if(inputPlace.text.Length > 0 && inputDamage.text.Length > 0)
-        {
-            GetNewDamage(inputPlace.text, inputDamage.text);
-            inputDamage.text = "";
-            inputDamage.Select();
-        }
-        
-    }
-
-    public void FinishAddDamage()
-    {
-        if (inputPlace.text.Length > 0 && inputDamage.text.Length > 0)
-        {
-            GetNewDamage(inputPlace.text, inputDamage.text);
-            inputDamage.text = "";
-            inputPlace.text = "";
-        }            
-    }
-    private void GetNewDamage(string placeText, string damageText)
-    {
-
-        int.TryParse(inputPenitration.text, out penetration);
-        damageItems.Add(Instantiate(damageItemExample, contentForDamageItems.transform));
-        damageItems[^1].SetParams(placeText, damageText, penetration, toggleIsWarp.isOn, toggleIsIgnoreArmor.isOn, toggleIsIgnoreToughness.isOn, DeleteItem);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(contentForDamageItems.transform as RectTransform);
-    }
-
-    private void DeleteItem(DamageItem damageItem)
-    {
-        damageItems.Remove(damageItem);
-        Destroy(damageItem.gameObject);
+        wounds -= damage;
+        textWound.text = $"{wounds}";
+        var pText = Instantiate(panelText, transform);
+        pText.SetParams(text);
     }
 
     public void PlusWound()
     {
-        wound += 1;
-        textWound.text = $"{wound}";
+        wounds += 1;
+        textWound.text = $"{wounds}";
     }
 
     public void MinusWound()
     {
-        wound -= 1;
-        textWound.text = $"{wound}";
+        wounds -= 1;
+        textWound.text = $"{wounds}";
     }
-    public void Cancel()
-    {
-        Debug.Log("What?");
-        panelDamage.SetActive(false);
-        panelWithText.SetActive(false);
-    }
-
     public void Exit()
     {
         Application.Quit();
+    }
+    private void ParseInputs()
+    {
+        if (armor == null)
+        {
+            armor = new SaveLoadArmor();
+        }
+        int.TryParse(inputHead.text, out armor.head);
+        int.TryParse(inputRightHand.text, out armor.rightHand);
+        int.TryParse(inputLeftHand.text, out armor.leftHand);
+        int.TryParse(inputBody.text, out armor.body);
+        int.TryParse(inputRightLeg.text, out armor.rightLeg);
+        int.TryParse(inputLeftLeg.text, out armor.leftLeg);
+        int.TryParse(inputBonusToughness.text, out armor.bToughness);
+        int.TryParse(inputBonusWP.text, out armor.bWillPower);
+        armor.wounds = wounds;
+    }
+    public void SaveArmor()
+    {
+        ParseInputs();
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            string jsonDataString = JsonUtility.ToJson(armor, true);
+            string path = Path.Combine(Application.persistentDataPath, $"armor.armor");
+            byte[] jsonbytes = Encoding.UTF8.GetBytes(jsonDataString);
+            File.WriteAllBytes(path, jsonbytes);
+        }
+        else
+        {
+            string jsonDataString = JsonUtility.ToJson(armor, true);
+            string path = Path.Combine($"{Application.dataPath}/StreamingAssets", $"armor.armor");
+            File.WriteAllText(path, jsonDataString);
+        }
     }
 }

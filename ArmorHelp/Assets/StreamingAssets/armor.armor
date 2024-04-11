@@ -1,11 +1,16 @@
 {
-    "head": 2,
+    "head": 3,
     "rightHand": 3,
     "leftHand": 3,
     "body": 3,
     "rightLeg": 3,
     "leftLeg": 3,
     "wounds": 11,
-    "bToughness": 3,
-    "bWillPower": 3
+    "bWillPower": 3,
+    "headArmor": 2,
+    "rightHandArmor": 2,
+    "leftHandArmor": 2,
+    "bodyArmor": 2,
+    "rightLegArmor": 2,
+    "leftLegArmor": 2
 }

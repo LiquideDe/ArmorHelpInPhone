@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class NewGunPanel : MonoBehaviour
 {
-    [SerializeField] TMP_InputField inputName, inputTotalAmmo, inputClipAmmo, inputSemiAutoFire, inputAutoFire;
+    [SerializeField] TMP_InputField inputName, inputTotalClip, inputClipAmmo, inputSemiAutoFire, inputAutoFire;
     [SerializeField] Toggle toggleSingle;
     [SerializeField] TMP_Dropdown dropdown;
 
@@ -22,11 +22,11 @@ public class NewGunPanel : MonoBehaviour
 
     public void GunIsDone()
     {
-        if(inputName.text.Length > 0 && inputClipAmmo.text.Length > 0 && inputTotalAmmo.text.Length > 0)
+        if(inputName.text.Length > 0 && inputClipAmmo.text.Length > 0 && inputTotalClip.text.Length > 0)
         {
             SaveLoadGun gun = new SaveLoadGun();
             gun.name = inputName.text;
-            int.TryParse(inputTotalAmmo.text, out gun.totalAmmo);
+            int.TryParse(inputTotalClip.text, out gun.totalClips);
             int.TryParse(inputClipAmmo.text, out gun.maxClip);
             int.TryParse(inputSemiAutoFire.text, out gun.semiAutoFire);
             int.TryParse(inputAutoFire.text, out gun.autoFire);

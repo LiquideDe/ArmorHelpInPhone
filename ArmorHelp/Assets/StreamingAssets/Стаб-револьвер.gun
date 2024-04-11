@@ -4,6 +4,6 @@
     "semiAutoFire": 0,
     "autoFire": 0,
     "type": 0,
-    "totalAmmo": 18,
+    "totalClips": 2,
     "singleFire": true
 }

@@ -102,7 +102,7 @@ public class ListGuns : MonoBehaviour
         lasgun.autoFire = 0;
         lasgun.maxClip = 60;
         lasgun.semiAutoFire = 3;
-        lasgun.totalAmmo = 180;
+        lasgun.totalClips = 2;
         lasgun.type = 3;
         lasgun.singleFire = true;
 
@@ -111,7 +111,7 @@ public class ListGuns : MonoBehaviour
         autopistol.autoFire = 6;
         autopistol.maxClip = 18;
         autopistol.semiAutoFire = 0;
-        autopistol.totalAmmo = 54;
+        autopistol.totalClips = 2;
         autopistol.type = 1;
         autopistol.singleFire = true;
 
@@ -120,7 +120,7 @@ public class ListGuns : MonoBehaviour
         revolver.autoFire = 0;
         revolver.maxClip = 6;
         revolver.semiAutoFire = 0;
-        revolver.totalAmmo = 18;
+        revolver.totalClips = 2;
         revolver.type = 0;
         revolver.singleFire = true;
 
@@ -129,7 +129,7 @@ public class ListGuns : MonoBehaviour
         shotgun.autoFire = 0;
         shotgun.maxClip = 8;
         shotgun.semiAutoFire = 0;
-        shotgun.totalAmmo = 24;
+        shotgun.totalClips = 2;
         shotgun.type = 5;
         shotgun.singleFire = true;
 
@@ -138,7 +138,7 @@ public class ListGuns : MonoBehaviour
         autogun.autoFire = 10;
         autogun.maxClip = 30;
         autogun.semiAutoFire = 3;
-        autogun.totalAmmo = 90;
+        autogun.totalClips = 2;
         autogun.type = 2;
         autogun.singleFire = true;
 

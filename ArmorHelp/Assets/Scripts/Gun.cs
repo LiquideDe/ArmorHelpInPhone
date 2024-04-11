@@ -19,13 +19,13 @@ public class Gun : MonoBehaviour
     [SerializeField] TMP_InputField inputFieldAmmo;
     [SerializeField] GameObject panelWithAmmo;
     List<MyToggle> rof = new List<MyToggle>();
-
+    bool isFiring;
 
     public void SetGun(SaveLoadGun loadGun, AudioClip shootSound, AudioClip reloadSound, AudioClip emptySound)
     {
         gameObject.SetActive(true);
         nameText.text = loadGun.name;
-        totalAmmo = loadGun.totalAmmo;
+        totalAmmo = loadGun.totalClips * loadGun.maxClip;
         maxClip = loadGun.maxClip;
         semiAutoFire = loadGun.semiAutoFire;
         autoFire = loadGun.autoFire;
@@ -90,21 +90,23 @@ public class Gun : MonoBehaviour
 
     public void Shoot()
     {
-        arrayBullet = toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<MyToggle>().Id;
-        if(arrayBullet == semiAutoFire)
+        if (!isFiring)
         {
-            InvokeRepeating("ShootSound", 0.1f, 0.16f);
-        }
-        else if(arrayBullet == autoFire)
-        {
-            InvokeRepeating("ShootSound", 0.1f, 0.13f);
-        }
-        else
-        {
-            InvokeRepeating("ShootSound", 0.1f, 0.16f);
-        }
-        
-        
+            arrayBullet = toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<MyToggle>().Id;
+            isFiring = true;
+            if (arrayBullet == semiAutoFire)
+            {
+                InvokeRepeating("ShootSound", 0.1f, 0.16f);
+            }
+            else if (arrayBullet == autoFire)
+            {
+                InvokeRepeating("ShootSound", 0.1f, 0.13f);
+            }
+            else
+            {
+                InvokeRepeating("ShootSound", 0.1f, 0.16f);
+            }
+        }      
     }
 
     private void UpdateText()
@@ -121,7 +123,8 @@ public class Gun : MonoBehaviour
             if(ammoClip == 0)
             {
                 PlaySound(emptySound);
-            }            
+            }
+            Invoke("StopFiring", shootSound.length);
         }
         else
         {
@@ -139,8 +142,6 @@ public class Gun : MonoBehaviour
         audio.clip = clip;
         audio.Play();
         Destroy(audio, 2f);
-        //audioSource.clip = clip;
-        //audioSource.Play();
     }
 
     public void AddAmmo()
@@ -152,4 +153,8 @@ public class Gun : MonoBehaviour
         inputFieldAmmo.text = "";
     }
 
+    private void StopFiring()
+    {
+        isFiring = false;
+    }
 }

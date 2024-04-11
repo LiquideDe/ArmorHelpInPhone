@@ -254,7 +254,7 @@ TextureImporter:
         width: 610
         height: 1072
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -262,6 +262,48 @@ TextureImporter:
       bones: []
       spriteID: b29bc67777ea79e4ab6b6dfc8f2a7760
       internalID: 1288140194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elements-02_6
+      rect:
+        serializedVersion: 2
+        x: 829
+        y: 3146
+        width: 219
+        height: 219
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bef86da5e45f6d44a0d70ba7ce79fe4
+      internalID: 1060047032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elements-02_7
+      rect:
+        serializedVersion: 2
+        x: 2608
+        y: 126
+        width: 1147
+        height: 205
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70bf5ad143dcbb34d8d462c56f1b24bc
+      internalID: 286361504
       vertices: []
       indices: 
       edges: []
@@ -283,6 +325,8 @@ TextureImporter:
       Elements-02_3: 355645477
       Elements-02_4: 557790029
       Elements-02_5: 1288140194
+      Elements-02_6: 1060047032
+      Elements-02_7: 286361504
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

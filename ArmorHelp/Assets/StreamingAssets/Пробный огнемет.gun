@@ -1,0 +1,9 @@
+{
+    "name": "Пробный огнемет",
+    "maxClip": 3,
+    "semiAutoFire": 0,
+    "autoFire": 0,
+    "type": 5,
+    "totalClips": 2,
+    "singleFire": true
+}

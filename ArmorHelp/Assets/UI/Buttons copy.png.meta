@@ -233,7 +233,7 @@ TextureImporter:
         width: 638
         height: 640
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -241,6 +241,48 @@ TextureImporter:
       bones: []
       spriteID: a11819f09d45eae49bdff41e928a234a
       internalID: 1883672727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Buttons copy_5
+      rect:
+        serializedVersion: 2
+        x: 2963
+        y: 3713
+        width: 641
+        height: 639
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0d2105592ba98d41a6b5f4cfba5a9a9
+      internalID: 1551773749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Buttons copy_6
+      rect:
+        serializedVersion: 2
+        x: 2964
+        y: 4590
+        width: 640
+        height: 639
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: faf4648c69fc89e4593eb4cff5fb4083
+      internalID: -1108592309
       vertices: []
       indices: 
       edges: []
@@ -261,6 +303,8 @@ TextureImporter:
       Buttons copy_2: -1520047357
       Buttons copy_3: -859245745
       Buttons copy_4: 1883672727
+      Buttons copy_5: 1551773749
+      Buttons copy_6: -1108592309
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

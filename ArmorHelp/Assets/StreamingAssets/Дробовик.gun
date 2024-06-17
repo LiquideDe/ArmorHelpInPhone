@@ -3,7 +3,7 @@
     "maxClip": 8,
     "semiAutoFire": 0,
     "autoFire": 0,
-    "type": 5,
+    "type": 2,
     "totalClips": 2,
     "singleFire": true
 }

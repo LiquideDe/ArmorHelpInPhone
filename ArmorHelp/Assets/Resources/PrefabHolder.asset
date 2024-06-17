@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c48048efc810147af45add240c74c2, type: 3}
+  m_Name: PrefabHolder
+  m_EditorClassIdentifier: 
+  _armorPrefab: {fileID: 4700298849559027539, guid: 672d08758da83814996931900d9c4588, type: 3}
+  _arsenalPrefab: {fileID: 2928231201119339281, guid: 33d7b2b264aa0c944a4ef8a6a5f88fd2, type: 3}
+  _damageParametersPanelPrefab: {fileID: 5208256372655578618, guid: f04e702552c26a74b8421cfbcb1d8df4, type: 3}
+  _panelTextDamage: {fileID: 646907939055507269, guid: 41de5c36c9772774c8d7b7d8765f7e90, type: 3}
+  _listWithGuns: {fileID: 7094022570822629159, guid: 7673a4b4e844665418377f01d64df517, type: 3}
+  _newGunPanel: {fileID: 5802951358964918765, guid: 91d10a4d01565e4469f02ada0b2191cc, type: 3}
+  _qrScanner: {fileID: 2941998772742631100, guid: 4257eeee5e8267c4f853faae254c440e, type: 3}
+  _ballisticModifier: {fileID: 5316140903876876007, guid: 01c38bd9255fe4e4db87b74e611cc3e1, type: 3}
+  _weaponModifier: {fileID: 3955674152203154518, guid: b8cdf64da4848884ea7f5996311a9863, type: 3}

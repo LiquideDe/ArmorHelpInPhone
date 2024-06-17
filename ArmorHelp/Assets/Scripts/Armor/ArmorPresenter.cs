@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Zenject;
@@ -46,7 +44,8 @@ public class ArmorPresenter : IPresenter
             }
         }
         Subscribe();
-        _view.LoadArmor(armor);
+        if(armor != null)
+            _view.LoadArmor(armor);
     }
 
     public void ShowView() 
@@ -68,6 +67,7 @@ public class ArmorPresenter : IPresenter
         _view.MinusWound += MinusWound;
         _view.SaveArmor += SaveArmor;
         _view.GoToArsenal += OpenArsenal;
+        _view.Exit += Exit;
     }
 
     private void Unscribe()
@@ -125,4 +125,6 @@ public class ArmorPresenter : IPresenter
             File.WriteAllText(path, jsonDataString);
         }
     }
+
+    private void Exit() => Application.Quit();
 }

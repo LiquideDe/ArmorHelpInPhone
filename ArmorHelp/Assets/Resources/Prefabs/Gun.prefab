@@ -1636,6 +1636,12 @@ MonoBehaviour:
   toggleGroup: {fileID: 8630186422637939058}
   inputFieldAmmo: {fileID: 8630186422823481106}
   panelWithAmmo: {fileID: 8630186422071937013}
+  _buttonRemove: {fileID: 8630186422646043297}
+  _buttonReload: {fileID: 8630186424161662021}
+  _buttonFire: {fileID: 8630186422225643912}
+  _buttonAddAmmo: {fileID: 8630186423860921230}
+  _buttonCloseAddAmmo: {fileID: 8630186423930058651}
+  _buttonConfirmAddAmmo: {fileID: 8630186422069986266}
 --- !u!82 &8630186422930789865
 AudioSource:
   m_ObjectHideFlags: 0

@@ -60,7 +60,7 @@ public class NewGunPanel : MonoBehaviour
             int.TryParse(inputAutoFire.text, out gun.autoFire);
             gun.singleFire = toggleSingle.isOn;
             gun.type = dropdown.value;
-            new LoadGuns().SetGun(gun);
+            new LoadGuns().SaveGun(gun);
             ReturnNewGun?.Invoke(gun);
             Destroy(gameObject);
         }

@@ -34,6 +34,13 @@ public class GunHolder : ScriptableObject
         return gun;
     }
 
+    public Gun Get(SaveLoadGunUsed loadGunUsed)
+    {
+        Gun gun = Instantiate(_gunPrefab);
+        gun.Initialize(loadGunUsed, GetSound(_idToType[loadGunUsed.type]));
+        return gun;
+    }
+
     private GunSounds GetSound(TypeGun typeGun)
     {
         foreach(GunSounds gunSound in gunSounds)

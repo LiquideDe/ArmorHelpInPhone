@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using UnityEngine;
 using Zenject;
 
 public class ArsenalPresenter : IPresenter
@@ -11,6 +14,7 @@ public class ArsenalPresenter : IPresenter
     private ArsenalView _view;
     private AudioManager _audioManager;
     private GunHolder _gunFactory;
+    private List<Gun> _guns = new List<Gun>();
     
 
     [Inject]
@@ -24,6 +28,7 @@ public class ArsenalPresenter : IPresenter
     {
         _view = view;
         _view.gameObject.SetActive(false);
+        CheckAndAddUsedGun();
         Subscribe();
     }
 
@@ -33,7 +38,93 @@ public class ArsenalPresenter : IPresenter
     {
         ShowArsenal();
         Gun gun= _gunFactory.Get(loadGun);
+        gun.ChangeProperty += SaveGunWithChanges;
+        gun.RemoveThisGun += RemoveThisGun;
         _view.AddGun(gun);
+        _guns.Add(gun);
+    }
+
+    private void CheckAndAddUsedGun()
+    {
+        if (_guns.Count > 0)
+            return;
+
+        List<SaveLoadGunUsed> guns = new List<SaveLoadGunUsed>();
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            var info = new DirectoryInfo(Application.persistentDataPath);
+            var fileInfo = info.GetFiles("*.gunUsed");
+            byte[] jsonByte = null;
+            foreach (FileInfo file in fileInfo)
+            {
+                jsonByte = File.ReadAllBytes(file.FullName);
+                string jsonData = Encoding.UTF8.GetString(jsonByte);
+                guns.Add(JsonUtility.FromJson<SaveLoadGunUsed>(jsonData));
+            }
+        }
+        else
+        {
+            //string filePath = Path.Combine(Application.dataPath, "StreamingAssets", name + ".json");
+            var files = Directory.GetFiles($"{Application.dataPath}/StreamingAssets", "*.gunUsed");
+            foreach (string path in files)
+            {
+                string loadData = File.ReadAllText(path);
+                guns.Add(JsonUtility.FromJson<SaveLoadGunUsed>(loadData));
+            }
+        }
+
+        foreach(SaveLoadGunUsed gunUsed in guns)
+        {
+            Gun gun = _gunFactory.Get(gunUsed);
+            gun.ChangeProperty += SaveGunWithChanges;
+            gun.RemoveThisGun += RemoveThisGun;
+            _view.AddGun(gun);
+            _guns.Add(gun);
+        }
+    }
+
+    private void RemoveThisGun(Gun gun)
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            var info = new DirectoryInfo(Application.persistentDataPath);
+            var fileInfo = info.GetFiles($"{gun.Name}.gunUsed");
+            File.Delete(fileInfo[0].FullName);
+        }
+        else
+        {
+            string filePath = Path.Combine(Application.dataPath, "StreamingAssets", gun.Name + ".gunUsed");
+            File.Delete(filePath);
+        }
+        _guns.Remove(gun);
+        gun.DestroyView();
+    }
+
+    private void SaveGunWithChanges(Gun gun)
+    {
+        SaveLoadGunUsed saveLoad = new SaveLoadGunUsed();
+        saveLoad.name = gun.Name;
+        saveLoad.autoFire = gun.AutoFire;
+        saveLoad.clip = gun.AmmoClip;
+        saveLoad.maxClip = gun.MaxClip;
+        saveLoad.semiAutoFire = gun.SemiAutoFire;
+        saveLoad.singleFire = gun.SingleFire;
+        saveLoad.totalAmmo = gun.TotalAmmo;
+        saveLoad.type = gun.IdTypeSound;
+
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            string jsonDataString = JsonUtility.ToJson(saveLoad, true);
+            string path = Path.Combine(Application.persistentDataPath, $"{saveLoad.name}.gunUsed");
+            byte[] jsonbytes = Encoding.UTF8.GetBytes(jsonDataString);
+            File.WriteAllBytes(path, jsonbytes);
+        }
+        else
+        {
+            string jsonDataString = JsonUtility.ToJson(saveLoad, true);
+            string path = Path.Combine($"{Application.dataPath}/StreamingAssets", $"{saveLoad.name}.gunUsed");
+            File.WriteAllText(path, jsonDataString);
+        }
     }
 
     private void Subscribe()

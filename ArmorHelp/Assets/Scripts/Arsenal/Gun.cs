@@ -4,26 +4,64 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class Gun : MonoBehaviour
 {
-    int _ammoClip, _maxClip, _totalAmmo, _semiAutoFire, _autoFire, _arrayBullet;
-    bool singleFire;
-    AudioClip _shootSound;
-    AudioClip _reloadSound;
-    AudioClip _emptySound;
-    [SerializeField] TextMeshProUGUI nameText, clipText, totalAmmoText;
-    [SerializeField] MyToggle _togglePrefab;
-    [SerializeField] ToggleGroup toggleGroup;
-    [SerializeField] TMP_InputField inputFieldAmmo;
-    [SerializeField] GameObject panelWithAmmo;
-    List<MyToggle> rof = new List<MyToggle>();
-    bool isFiring;
+    [SerializeField] private TextMeshProUGUI nameText, clipText, totalAmmoText;
+    [SerializeField] private MyToggle _togglePrefab;
+    [SerializeField] private ToggleGroup toggleGroup;
+    [SerializeField] private TMP_InputField inputFieldAmmo;
+    [SerializeField] private GameObject panelWithAmmo;
+    [SerializeField] private Button _buttonRemove, _buttonReload, _buttonFire, _buttonAddAmmo, _buttonCloseAddAmmo, _buttonConfirmAddAmmo;
+
+    public event Action<Gun> ChangeProperty, RemoveThisGun;
+    private int _ammoClip, _maxClip, _totalAmmo, _semiAutoFire, _autoFire, _arrayBullet, _idTypeSound;
+    private bool singleFire;
+    private AudioClip _shootSound;
+    private AudioClip _reloadSound;
+    private AudioClip _emptySound;
+    private string _name;
+
+    private List<MyToggle> rof = new List<MyToggle>();
+    private bool isFiring;
+
+    public string Name => _name;
+
+    public int AmmoClip => _ammoClip; 
+    public int MaxClip => _maxClip;
+    public int TotalAmmo => _totalAmmo;
+    public int SemiAutoFire => _semiAutoFire;
+    public int AutoFire => _autoFire;
+    public int ArrayBullet => _arrayBullet;
+    public bool SingleFire => singleFire;
+    public int IdTypeSound => _idTypeSound;
+
+    private void OnEnable()
+    {
+        _buttonRemove.onClick.AddListener(RemovePressed);
+        _buttonReload.onClick.AddListener(Reload);
+        _buttonFire.onClick.AddListener(Shoot);
+        _buttonAddAmmo.onClick.AddListener(ShowAddAmmo);
+        _buttonCloseAddAmmo.onClick.AddListener(CloseAddAmmo);
+        _buttonConfirmAddAmmo.onClick.AddListener(ConfirmAddAmmo);
+    }
+
+    private void OnDisable()
+    {
+        _buttonRemove.onClick.RemoveAllListeners();
+        _buttonReload.onClick.RemoveAllListeners();
+        _buttonFire.onClick.RemoveAllListeners();
+        _buttonAddAmmo.onClick.RemoveAllListeners();
+        _buttonCloseAddAmmo.onClick.RemoveAllListeners();
+        _buttonConfirmAddAmmo.onClick.RemoveAllListeners();
+    }
 
     public void Initialize(SaveLoadGun loadGun, GunSounds gunSounds)
     {
         gameObject.SetActive(true);
         nameText.text = loadGun.name;
+        _name = loadGun.name;
         _totalAmmo = loadGun.totalClips * loadGun.maxClip;
         _maxClip = loadGun.maxClip;
         _semiAutoFire = loadGun.semiAutoFire;
@@ -32,7 +70,7 @@ public class Gun : MonoBehaviour
         _reloadSound = gunSounds.Reload;
         _emptySound = gunSounds.Empty;
         _ammoClip = this._maxClip;
-        UpdateText();
+        _idTypeSound = loadGun.type;        
         singleFire = loadGun.singleFire;
         if (singleFire)
         {
@@ -41,23 +79,67 @@ public class Gun : MonoBehaviour
             rof[^1].Id = 1;
             rof[^1].gameObject.SetActive(true);
         }
-        if (this._semiAutoFire > 0)
+        if (_semiAutoFire > 0)
         {
             rof.Add(Instantiate(_togglePrefab, toggleGroup.transform));
             rof[^1].Text.text = "Полу автомат";
-            rof[^1].Id = this._semiAutoFire;
+            rof[^1].Id = _semiAutoFire;
             rof[^1].gameObject.SetActive(true);
         }
-        if(this._autoFire > 0)
+        if(_autoFire > 0)
         {
             rof.Add(Instantiate(_togglePrefab, toggleGroup.transform));
             rof[^1].Text.text = "Автомат";
-            rof[^1].Id = this._autoFire;
+            rof[^1].Id = _autoFire;
             rof[^1].gameObject.SetActive(true);
         }
+        UpdateText();
+        ChangeProperty?.Invoke(this);
     }
 
-    public void Reload()
+    public void Initialize(SaveLoadGunUsed loadGun, GunSounds gunSounds)
+    {
+        gameObject.SetActive(true);
+        nameText.text = loadGun.name;
+        _name = loadGun.name;
+        _totalAmmo = loadGun.totalAmmo;
+        _maxClip = loadGun.maxClip;
+        _semiAutoFire = loadGun.semiAutoFire;
+        _autoFire = loadGun.autoFire;
+        _shootSound = gunSounds.Shoot;
+        _reloadSound = gunSounds.Reload;
+        _emptySound = gunSounds.Empty;
+        _ammoClip = loadGun.clip;
+        
+        singleFire = loadGun.singleFire;
+        _idTypeSound = loadGun.type;
+        if (singleFire)
+        {
+            rof.Add(Instantiate(_togglePrefab, toggleGroup.transform));
+            rof[^1].Text.text = "Одиночный режим";
+            rof[^1].Id = 1;
+            rof[^1].gameObject.SetActive(true);
+        }
+        if (_semiAutoFire > 0)
+        {
+            rof.Add(Instantiate(_togglePrefab, toggleGroup.transform));
+            rof[^1].Text.text = "Полу автомат";
+            rof[^1].Id = _semiAutoFire;
+            rof[^1].gameObject.SetActive(true);
+        }
+        if (_autoFire > 0)
+        {
+            rof.Add(Instantiate(_togglePrefab, toggleGroup.transform));
+            rof[^1].Text.text = "Автомат";
+            rof[^1].Id = _autoFire;
+            rof[^1].gameObject.SetActive(true);
+        }
+        UpdateText();
+    }
+
+    public void DestroyView() => Destroy(gameObject);
+
+    private void Reload()
     {
         if(_ammoClip == 0 && _maxClip <= _totalAmmo)
         {
@@ -84,10 +166,10 @@ public class Gun : MonoBehaviour
             PlaySound(_reloadSound);
         }
         UpdateText();
-
+        ChangeProperty?.Invoke(this);
     }
 
-    public void Shoot()
+    private void Shoot()
     {
         if (!isFiring)
         {
@@ -124,6 +206,7 @@ public class Gun : MonoBehaviour
                 PlaySound(_emptySound);
             }
             Invoke("StopFiring", _shootSound.length);
+            ChangeProperty?.Invoke(this);
         }
         else
         {
@@ -143,14 +226,24 @@ public class Gun : MonoBehaviour
         Destroy(audio, 2f);
     }
 
-    public void AddAmmo()
+    private void ShowAddAmmo() => panelWithAmmo.SetActive(true);
+
+    private void CloseAddAmmo()
+    {
+        panelWithAmmo.SetActive(false);
+        inputFieldAmmo.text = "";
+    }
+
+    private void ConfirmAddAmmo()
     {
         int.TryParse(inputFieldAmmo.text, out int ammo);
         _totalAmmo += ammo;
         UpdateText();
-        panelWithAmmo.SetActive(false);
-        inputFieldAmmo.text = "";
+        CloseAddAmmo();
+        ChangeProperty?.Invoke(this);
     }
+
+    private void RemovePressed() => RemoveThisGun?.Invoke(this);
 
     private void StopFiring() => isFiring = false;
     

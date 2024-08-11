@@ -145,11 +145,11 @@ public class ListWithNewGunsPresenter : IPresenter
         autogun.singleFire = true;
 
         var lGuns = new LoadGuns();
-        lGuns.SetGun(lasgun);
-        lGuns.SetGun(autopistol);
-        lGuns.SetGun(revolver);
-        lGuns.SetGun(shotgun);
-        lGuns.SetGun(autogun);
+        lGuns.SaveGun(lasgun);
+        lGuns.SaveGun(autopistol);
+        lGuns.SaveGun(revolver);
+        lGuns.SaveGun(shotgun);
+        lGuns.SaveGun(autogun);
     }
     private void SetThisGunDown(SaveLoadGun gun)
     {

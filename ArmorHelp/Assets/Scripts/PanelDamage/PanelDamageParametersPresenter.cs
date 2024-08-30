@@ -8,7 +8,7 @@ public class PanelDamageParametersPresenter : IPresenter
     public event Action<string, int> ReturnTextToArmor;
     public event Action Cancel;
 
-    private SaveLoadArmor _armor;
+    private Character _character;
     private AudioManager _audioManager;
     private PanelDamageParametersView _view;
     private int[] _placesWithDamage = new int[6];
@@ -16,10 +16,10 @@ public class PanelDamageParametersPresenter : IPresenter
     [Inject]
     private void Construct(AudioManager audioManager) => _audioManager = audioManager;
 
-    public void Initialize(PanelDamageParametersView view, SaveLoadArmor armor)
+    public void Initialize(PanelDamageParametersView view, Character character)
     {
         _view = view;
-        _armor = armor;
+        _character = character;
         Subscribe();
     }
 
@@ -40,48 +40,58 @@ public class PanelDamageParametersPresenter : IPresenter
         _audioManager.PlayDone();
         foreach (DamageItem item in damageItems)
         {
-            if (item.Place < 10)
+            if (item.Place <= 10)
             {
-                Damage(_armor.head, _armor.headArmor, item, 0); //0 - голова
+                Damage(_character.HeadTotal, _character.ArmorHead, item, 0, _character.ShelterArmorPoint, _character.IsHeadSheltered); //0 - голова
             }
             else if (item.Place > 10 && item.Place < 21)
             {
-                Damage(_armor.rightHand, _armor.rightHandArmor, item, 1); //1 - правая рука
+                Damage(_character.RightHandTotal, _character.ArmorRightHand, item, 1, _character.ShelterArmorPoint, _character.IsRightHandSheltered); //1 - правая рука
             }
             else if (item.Place > 20 && item.Place < 31)
             {
-                Damage(_armor.leftHand, _armor.leftHandArmor, item, 2); //2 - левая рука
+                Damage(_character.LeftHandTotal, _character.ArmorLeftHand, item, 2, _character.ShelterArmorPoint, _character.IsLeftHandSheltered); //2 - левая рука
             }
             else if (item.Place > 30 && item.Place < 71)
             {
-                Damage(_armor.body, _armor.bodyArmor, item, 3);//3 - тело
+                Damage(_character.BodyTotal, _character.ArmorBody, item, 3, _character.ShelterArmorPoint, _character.IsBodySheltered);//3 - тело
             }
             else if (item.Place > 70 && item.Place < 86)
             {
-                Damage(_armor.rightLeg, _armor.rightLegArmor, item, 4);//4 - правая нога
+                Damage(_character.RightLegTotal, _character.ArmorRightLeg, item, 4, _character.ShelterArmorPoint, _character.IsRightLegSheltered);//4 - правая нога
             }
             else if (item.Place > 85 && item.Place < 101)
             {
-                Damage(_armor.leftLeg, _armor.leftLegArmor, item, 5);//5 - левая нога
+                Damage(_character.LeftLegTotal, _character.ArmorLeftLeg, item, 5, _character.ShelterArmorPoint, _character.IsLeftLegSheltered);//5 - левая нога
             }
         }
         SetFinalText();
     }
 
-    private void Damage(int totalDef, int armor, DamageItem item, int idPlace)
+    private void Damage(int totalDef, int armor, DamageItem item, int idPlace, int shelterPoint, bool isTakeCover)
     {
         int damage = 0;
         int bToughness = totalDef - armor;
+        if (isTakeCover)
+            armor += shelterPoint;
+
         if (!item.IsIgnoreArmor && !item.IsIgnoreToughness && !item.IsWarp)
         {
 
             if (armor < item.Penetration)
             {
                 damage = item.Damage - bToughness;
+                if (isTakeCover)
+                    _character.ShelterArmorPoint--;
             }
             else
             {
                 damage = item.Damage - (armor - item.Penetration + bToughness);
+                if (isTakeCover)
+                {
+                    if (item.Damage - (shelterPoint - item.Penetration) > 0)
+                        _character.ShelterArmorPoint--;
+                }
             }
         }
         else if (item.IsIgnoreArmor && !item.IsIgnoreToughness && !item.IsWarp)
@@ -94,10 +104,13 @@ public class PanelDamageParametersPresenter : IPresenter
                 damage = item.Damage - (armor - item.Penetration);
             else
                 damage = item.Damage;
+
+            if (item.Penetration > _character.ShelterArmorPoint || item.Damage - (_character.ShelterArmorPoint - item.Penetration) > 0)
+                _character.ShelterArmorPoint--;
         }
         else if (item.IsWarp)
         {
-            damage = item.Damage - this._armor.bWillPower;
+            damage = item.Damage - _character.BWillpower;
         }
         else if (item.IsIgnoreArmor && item.IsIgnoreToughness && !item.IsWarp)
         {
@@ -145,6 +158,7 @@ public class PanelDamageParametersPresenter : IPresenter
             totalDamage += _placesWithDamage[5];
         }
         textDamage += $"Всего нанесено {totalDamage} урона";
+        _character.Wounds -= totalDamage;
         ReturnTextToArmor?.Invoke(textDamage, totalDamage);
         Unscribe();
         _view.DestroyView();

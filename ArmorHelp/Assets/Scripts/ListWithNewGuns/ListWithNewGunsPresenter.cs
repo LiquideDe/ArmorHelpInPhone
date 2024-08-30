@@ -132,7 +132,7 @@ public class ListWithNewGunsPresenter : IPresenter
         shotgun.maxClip = 8;
         shotgun.semiAutoFire = 0;
         shotgun.totalClips = 2;
-        shotgun.type = 5;
+        shotgun.type = 2;
         shotgun.singleFire = true;
 
         var autogun = new SaveLoadGun();
@@ -141,7 +141,7 @@ public class ListWithNewGunsPresenter : IPresenter
         autogun.maxClip = 30;
         autogun.semiAutoFire = 3;
         autogun.totalClips = 2;
-        autogun.type = 2;
+        autogun.type = 1;
         autogun.singleFire = true;
 
         var lGuns = new LoadGuns();

@@ -1,0 +1,10 @@
+{
+    "name": "Автоган",
+    "maxClip": 30,
+    "semiAutoFire": 3,
+    "autoFire": 10,
+    "type": 1,
+    "totalAmmo": 60,
+    "clip": 20,
+    "singleFire": true
+}

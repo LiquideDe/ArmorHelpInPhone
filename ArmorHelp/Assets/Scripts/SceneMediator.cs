@@ -39,13 +39,13 @@ public class SceneMediator
 
     private void ShowArsenal() => _arsenalPresenter.ShowArsenal();
 
-    private void ShowDamageParametersPanel(SaveLoadArmor armor)
+    private void ShowDamageParametersPanel(Character character)
     {
         PanelDamageParametersView parametersView = _viewFactory.Get(TypeScene.DamageParametersPanel).GetComponent<PanelDamageParametersView>();
         PanelDamageParametersPresenter parametersPresenter = (PanelDamageParametersPresenter)_presenterFactory.Get(TypeScene.DamageParametersPanel);
         parametersPresenter.Cancel += ShowArmor;
         parametersPresenter.ReturnTextToArmor += ShowDamageText;
-        parametersPresenter.Initialize(parametersView, armor);
+        parametersPresenter.Initialize(parametersView, character);
     }
 
     private void ShowDamageText(string text, int damage)
@@ -53,7 +53,7 @@ public class SceneMediator
         PanelText panelText = _viewFactory.Get(TypeScene.TextDamage).GetComponent<PanelText>();
         panelText.Initialize(text);
         panelText.PanelClose += ShowArmor;
-        _armorPresenter.TakeDamage(damage);
+        _armorPresenter.TakeDamage();
     }
 
     private void ShowListGunPanel()

@@ -6,13 +6,14 @@ using System;
 
 public class ArsenalView : MonoBehaviour
 {
-    [SerializeField] Button _buttonAddWeapon, _buttonReturnToArmor, _buttonCalculateModifiersBallistic, _buttonCalculateModifiersWeapon;
+    [SerializeField] Button _buttonAddWeapon, _buttonReturnToArmor, _buttonCalculateModifiersBallistic, _buttonCalculateModifiersWeapon, _buttonShop;
     [SerializeField] Transform _content;
 
     public event Action AddNewGun;
     public event Action ReturnToArmor;
     public event Action CalculateModifiersBallistic;
     public event Action CalculateModifiersWeapon;
+    public event Action GoToShop;
 
     private void OnEnable()
     {
@@ -20,7 +21,8 @@ public class ArsenalView : MonoBehaviour
         _buttonReturnToArmor.onClick.AddListener(ReturnToArmorPressed);
         _buttonCalculateModifiersBallistic.onClick.AddListener(CalculateModifiersBallisticPressed);
         _buttonCalculateModifiersWeapon.onClick.AddListener(CalculateModifiersWeaponPressed);
-    }
+        _buttonShop.onClick.AddListener(ShopPressed);
+    }    
 
     private void OnDisable()
     {
@@ -28,6 +30,7 @@ public class ArsenalView : MonoBehaviour
         _buttonReturnToArmor.onClick.RemoveAllListeners();
         _buttonCalculateModifiersBallistic.onClick.RemoveAllListeners();
         _buttonCalculateModifiersWeapon.onClick.RemoveAllListeners();
+        _buttonShop.onClick.RemoveAllListeners();
     }
 
     public void AddGun(Gun gun) => gun.transform.SetParent(_content);
@@ -38,4 +41,5 @@ public class ArsenalView : MonoBehaviour
     private void CalculateModifiersWeaponPressed() => CalculateModifiersWeapon?.Invoke();
 
     private void AddGunPressed() => AddNewGun?.Invoke();
+    private void ShopPressed() => GoToShop?.Invoke();
 }

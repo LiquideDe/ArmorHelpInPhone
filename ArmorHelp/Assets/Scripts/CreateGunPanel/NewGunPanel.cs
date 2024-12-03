@@ -21,24 +21,17 @@ public class NewGunPanel : MonoBehaviour
         {TypeGun.Fire, "Огненное" },
         {TypeGun.Laser, "Лазерное" },
         {TypeGun.Revolver, "Револьвер" },
-        {TypeGun.Shotgun, "Дробовик" }
+        {TypeGun.Shotgun, "Дробовик" },
+        {TypeGun.Pistol, "Пистолет" },
+        {TypeGun.Plasma, "Плазма" },
+        {TypeGun.Rad, "Рад" },
+        {TypeGun.Melta, "Мельта" },
+        {TypeGun.Grav, "Грав" },
+        {TypeGun.Electro, "Электро" }
     };
 
     [Inject]
     private void Construct(AudioManager audioManager) => _audioManager = audioManager;
-
-    private void OnEnable()
-    {
-        List<string> options = new List<string>();
-        foreach(TypeGun typeGun in Enum.GetValues(typeof(TypeGun)))
-        {
-            options.Add(_translateTypeGun[typeGun]);
-        }
-
-        dropdown.AddOptions(options);
-        _buttonClose.onClick.AddListener(Cancel);
-        _buttonDone.onClick.AddListener(GunIsDone);
-    }
 
     private void OnDisable()
     {
@@ -47,7 +40,22 @@ public class NewGunPanel : MonoBehaviour
         _buttonDone.onClick.RemoveAllListeners();
     }
 
-    public void GunIsDone()
+    public void Initialize()
+    {
+        List<string> options = new List<string>();
+        Debug.Log($"Количество типов = {Enum.GetValues(typeof(TypeGun)).Length}");
+        foreach (TypeGun typeGun in Enum.GetValues(typeof(TypeGun)))
+        {
+            Debug.Log($"Добавляем {typeGun}");
+            options.Add(_translateTypeGun[typeGun]);
+        }
+
+        dropdown.AddOptions(options);
+        _buttonClose.onClick.AddListener(Cancel);
+        _buttonDone.onClick.AddListener(GunIsDone);
+    }
+
+    private void GunIsDone()
     {
         if (inputName.text.Length > 0 && inputClipAmmo.text.Length > 0 && inputTotalClip.text.Length > 0)
         {
@@ -68,7 +76,7 @@ public class NewGunPanel : MonoBehaviour
             _audioManager.PlayWarning();
     }
 
-    public void Cancel()
+    private void Cancel()
     {
         _audioManager.PlayCancel();
         ClosePanel?.Invoke();

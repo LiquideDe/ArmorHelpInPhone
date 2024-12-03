@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using ZXing;
 
 public class QRScanner : MonoBehaviour
@@ -10,9 +11,12 @@ public class QRScanner : MonoBehaviour
     [SerializeField] RawImage _rawImage;
     [SerializeField] Button _buttonClose;
     [SerializeField] GameObject _textError;
+    [SerializeField] TextMeshProUGUI _textErrorText;
 
     public event System.Action<string> GetScannedText;
     public event System.Action Cancel;
+
+    public Coroutine _coroutine;
 
     WebCamTexture webcamTexture;
     string QrCode = string.Empty;

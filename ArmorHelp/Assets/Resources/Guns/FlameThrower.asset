@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6cf97708e4111d4d9752a119fc857c0, type: 3}
+  m_Name: FlameThrower
+  m_EditorClassIdentifier: 
+  _fireClip: {fileID: 8300000, guid: 041760b195a472049826c048daf8bd48, type: 3}
+  _reloadClip: {fileID: 8300000, guid: ab0aea60d6ad16748805a8910e43745e, type: 3}
+  _emptyClip: {fileID: 8300000, guid: fad02ddf44aa96d49b8304ee372acca9, type: 3}
+  _typeGun: 5

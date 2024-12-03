@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Zenject;
+using UnityEngine.Networking;
 
 public class QRScannerPresenter : IPresenter
 {
-    public event Action<SaveLoadGun> ReturnGunFromQR;
+    public event Action<string> ReturnValue;
     public event Action CloseQr;
 
     private AudioManager _audioManager;
@@ -45,27 +46,12 @@ public class QRScannerPresenter : IPresenter
 
     private void ReturnFromQrCode(string value)
     {
-
-        try
-        {
-            SaveLoadGun gun = JsonUtility.FromJson<SaveLoadGun>(value);
-        }
-
-        catch
-        {
-            _audioManager.PlayWarning();
-            _qrScanner.ShowError();
-            _qrScanner.StartQrReading();
-        }
-
-        finally
-        {
-            SaveLoadGun gun = JsonUtility.FromJson<SaveLoadGun>(value);
-            _audioManager.PlayDone();
-            Unscribe();
-            _qrScanner.DestroyView();
-            ReturnGunFromQR?.Invoke(gun);
-        }      
+        _audioManager.PlayDone();
+        ReturnValue?.Invoke(value);
+        Unscribe();
+        _qrScanner.DestroyView();        
     }
+
+    
 
 }

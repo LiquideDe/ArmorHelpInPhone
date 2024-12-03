@@ -21,3 +21,7 @@ MonoBehaviour:
   _qrScanner: {fileID: 2941998772742631100, guid: 4257eeee5e8267c4f853faae254c440e, type: 3}
   _ballisticModifier: {fileID: 5316140903876876007, guid: 01c38bd9255fe4e4db87b74e611cc3e1, type: 3}
   _weaponModifier: {fileID: 3955674152203154518, guid: b8cdf64da4848884ea7f5996311a9863, type: 3}
+  _armorForm: {fileID: 7914843917851485996, guid: 17fbf33b53184a54abfdf55b611a1e18, type: 3}
+  _weaponForm: {fileID: 3362863863503296531, guid: 8dc3b47eb20499e4c939f238441db641, type: 3}
+  _equipmentForm: {fileID: 4983069738741513603, guid: e6e95c28f09de0d41afac846f8608ca3, type: 3}
+  _shop: {fileID: 5062194029850834193, guid: eb8038f86fb2cf6489c0ef2efe9e2a7a, type: 3}

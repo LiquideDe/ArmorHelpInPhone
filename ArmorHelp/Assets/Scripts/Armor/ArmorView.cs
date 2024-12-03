@@ -14,7 +14,7 @@ public class ArmorView : MonoBehaviour
     [SerializeField] Sprite _nonActive;
     [SerializeField] Sprite _activeSmall;
     [SerializeField] Sprite _activeBig;
-    [SerializeField] Button _buttonOpenDamagePanel, _buttonExit, _buttonPlusWound, _buttonMinusWound, _buttonSave, _buttonArsenal;
+    [SerializeField] Button _buttonOpenDamagePanel, _buttonExit, _buttonPlusWound, _buttonMinusWound, _buttonSave, _buttonArsenal, _buttonScanQrArmor;
     [SerializeField] Toggle _toggleShelterHead, _toggleShelterRightHand, _toggleShelterLeftHand, _toggleShelterBody, _toggleShelterRightLeg, _toggleShelterLeftLeg;
 
     public event Action GoToDamagePanel;
@@ -25,6 +25,7 @@ public class ArmorView : MonoBehaviour
     public event Action GoToArsenal;
     public event Action TakeCover;
     public event Action ParseInputs;
+    public event Action ScanQr;
     
     private bool _isDeselectFromCode;
 
@@ -57,6 +58,7 @@ public class ArmorView : MonoBehaviour
         _buttonPlusWound.onClick.AddListener(PlusWoundPressed);
         _buttonMinusWound.onClick.AddListener(MinusWoundPressed);
         _buttonSave.onClick.AddListener(SaveArmorPressed);
+        _buttonScanQrArmor.onClick.AddListener(ScanQrArmorPressed);
 
         _inputBonusWP.onSubmit.AddListener(SetWillPower);
         _inputBonusWP.onDeselect.AddListener(CancelSelect);
@@ -149,7 +151,7 @@ public class ArmorView : MonoBehaviour
         _toggleShelterLeftLeg.onValueChanged.AddListener(TakeCoverPressed);
         _toggleShelterRightHand.onValueChanged.AddListener(TakeCoverPressed);
         _toggleShelterRightLeg.onValueChanged.AddListener(TakeCoverPressed);
-    }
+    }    
 
     public void LoadArmor(SaveLoadArmor armor)
     {
@@ -335,4 +337,6 @@ public class ArmorView : MonoBehaviour
     private void UpdateShelters(string value) => TakeCover?.Invoke();
 
     private void ParseInputsPressed(string value) => ParseInputs?.Invoke();
+
+    private void ScanQrArmorPressed() => ScanQr?.Invoke();
 }

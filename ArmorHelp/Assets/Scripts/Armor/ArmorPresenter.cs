@@ -3,11 +3,14 @@ using System;
 using Zenject;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 
 public class ArmorPresenter : IPresenter
 {
     public event Action GoToArsenal;
     public event Action<Character> GoToDamagePanel;
+    public event Action ScanArmorQr;
     private ArmorView _view;
     private AudioManager _audioManager;
     private Character _character;
@@ -21,6 +24,36 @@ public class ArmorPresenter : IPresenter
         _character = new Character();
         LoadDataFromSave();
         Subscribe();  
+    }
+
+    public void LoadDataFromQr(string data)
+    {
+        SaveLoadArmor armor = new SaveLoadArmor();
+        List<string> strings = new List<string>();
+        strings = data.Split(new char[] { '/' }).ToList();
+        if (string.Compare(strings[0], "A", true) == 0)
+        {
+            _view.InputBonusWP.text = strings[1];
+            _view.InputArmorHead.text = strings[2];
+            _view.InputTotalHead.text = strings[3];
+
+            _view.InputArmorBody.text = strings[4];
+            _view.InputTotalBody.text = strings[5];
+
+            _view.InputArmorRightHand.text = strings[6];
+            _view.InputTotalRightHand.text = strings[7];
+
+            _view.InputArmorLeftHand.text = strings[8];
+            _view.InputTotalLeftHand.text = strings[9];
+
+            _view.InputArmorRightLeg.text = strings[10];
+            _view.InputTotalRightLeg.text = strings[11];
+
+            _view.InputArmorLeftLeg.text = strings[12];
+            _view.InputTotalLeftLeg.text = strings[13];
+        }
+        else
+            Debug.Log($"Не прочитал {data}");        
     }
 
     public void ShowView() 
@@ -46,7 +79,8 @@ public class ArmorPresenter : IPresenter
         _view.Exit += Exit;
         _view.TakeCover += TakeCover;
         _view.ParseInputs += ParseInputs;
-    }
+        _view.ScanQr += ScanQr;
+    }    
 
     private void Unscribe()
     {
@@ -357,4 +391,10 @@ public class ArmorPresenter : IPresenter
         }
     }
     private void Exit() => Application.Quit();
+
+    private void ScanQr()
+    {
+        _audioManager.PlayClick();
+        ScanArmorQr?.Invoke();
+    }
 }

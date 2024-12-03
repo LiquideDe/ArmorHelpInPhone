@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class SceneMediator
@@ -24,6 +26,7 @@ public class SceneMediator
         _armorPresenter = (ArmorPresenter)_presenterFactory.Get(TypeScene.Armor);
         _armorPresenter.GoToArsenal += ShowArsenal;
         _armorPresenter.GoToDamagePanel += ShowDamageParametersPanel;
+        _armorPresenter.ScanArmorQr += ShowQrScannerArmor;
         _armorPresenter.Initialize(armorView);
 
         ArsenalView arsenalView = _viewFactory.Get(TypeScene.Arsenal).GetComponent<ArsenalView>();
@@ -32,8 +35,9 @@ public class SceneMediator
         _arsenalPresenter.AddNewGunDown += ShowListGunPanel;
         _arsenalPresenter.CalculateBallisticModifiersDown += ShowBallisticModifiers;
         _arsenalPresenter.CalculateWeaponModifiersDown += ShowWeaponModifiers;
+        _arsenalPresenter.GotToShop += ShowQrScannerJson;
         _arsenalPresenter.Initialize(arsenalView);
-    }    
+    }        
 
     private void ShowArmor() => _armorPresenter.ShowView();
 
@@ -62,7 +66,7 @@ public class SceneMediator
         ListWithNewGunsPresenter newGunsPresenter = (ListWithNewGunsPresenter)_presenterFactory.Get(TypeScene.ListWithGuns);
         newGunsPresenter.Close += ShowArsenal;
         newGunsPresenter.OpenCreationPanel += ShowCreationGunPanel;
-        newGunsPresenter.OpenQr += ShowQrScanner;
+        newGunsPresenter.OpenQr += ShowQrScannerGun;
         newGunsPresenter.SetThisGun += SetGun;
         newGunsPresenter.Initialize(listView);
     }
@@ -72,9 +76,10 @@ public class SceneMediator
 
     private void ShowCreationGunPanel()
     {
-        NewGunPanel newGunPanel = _viewFactory.Get(TypeScene.CreateGunPanel).GetComponent<NewGunPanel>();
+        NewGunPanel newGunPanel = _viewFactory.Get(TypeScene.CreateGunPanel).GetComponent<NewGunPanel>();        
         newGunPanel.ClosePanel += ShowArsenal;
         newGunPanel.ReturnNewGun += SetGun;
+        newGunPanel.Initialize();
     }
 
     private void ShowBallisticModifiers()
@@ -103,12 +108,67 @@ public class SceneMediator
             _weaponPresenter.ShowView();
     }
 
-    private void ShowQrScanner()
+    private void ShowQrScannerGun()
     {
         QRScanner qRScanner = _viewFactory.Get(TypeScene.QrScanner).GetComponent<QRScanner>();
         QRScannerPresenter scannerPresenter = (QRScannerPresenter)_presenterFactory.Get(TypeScene.QrScanner);
         scannerPresenter.CloseQr += ShowArsenal;
-        scannerPresenter.ReturnGunFromQR += SetGun;
+        scannerPresenter.ReturnValue += TransferStringToGun;
+        scannerPresenter.Initialize(qRScanner);
+    }
+
+    private void TransferStringToGun(string value)
+    {
+        byte[] bytes = Encoding.Default.GetBytes(value);
+        value = Encoding.UTF8.GetString(bytes);
+        SaveLoadGun gun = new SaveLoadGun();
+        List<string> strings = new List<string>();
+        strings = value.Split(new char[] { '/' }).ToList();
+        Debug.Log(strings);
+        if (string.Compare(strings[0], "W", true) == 0)
+        {
+            int.TryParse(strings[6], out int type);
+            int.TryParse(strings[4], out int auto);
+            int.TryParse(strings[3], out int semi);
+            int.TryParse(strings[5], out int clip);
+            gun.type = type;
+            gun.name = strings[1];
+            gun.autoFire = auto;
+            gun.semiAutoFire = semi;
+            if (strings[2] != "-")
+                gun.singleFire = true;
+            else
+                gun.singleFire = false;
+
+            gun.maxClip = clip;
+            Debug.Log($"clip = {clip}");
+            gun.totalClips = 3;
+            SetGun(gun);
+        }            
+    }
+
+    private void ShowQrScannerJson()
+    {
+        QRScanner qRScanner = _viewFactory.Get(TypeScene.QrScanner).GetComponent<QRScanner>();
+        QRScannerPresenter scannerPresenter = (QRScannerPresenter)_presenterFactory.Get(TypeScene.QrScanner);
+        scannerPresenter.CloseQr += ShowArsenal;
+        scannerPresenter.ReturnValue += ShowShop;
+        scannerPresenter.Initialize(qRScanner);
+    }
+
+    private void ShowShop(string data)
+    {
+        ShopView shopView = _viewFactory.Get(TypeScene.Shop).GetComponent<ShopView>();
+        shopView.CloseShop += ShowArsenal;
+        shopView.Initialize(data);
+    }
+
+    private void ShowQrScannerArmor()
+    {
+        QRScanner qRScanner = _viewFactory.Get(TypeScene.QrScanner).GetComponent<QRScanner>();
+        QRScannerPresenter scannerPresenter = (QRScannerPresenter)_presenterFactory.Get(TypeScene.QrScanner);
+        scannerPresenter.CloseQr += ShowArmor;
+        scannerPresenter.ReturnValue += _armorPresenter.LoadDataFromQr;
         scannerPresenter.Initialize(qRScanner);
     }
 }

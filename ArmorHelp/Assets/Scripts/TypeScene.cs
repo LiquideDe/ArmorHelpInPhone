@@ -8,5 +8,9 @@ public enum TypeScene
     CreateGunPanel,
     QrScanner,
     BallisticModifier,
-    WeaponModifier
+    WeaponModifier,
+    Shop,
+    ArmorForm,
+    WeaponForm,
+    EquipmentForm
 }

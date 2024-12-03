@@ -18,13 +18,11 @@ public class Gun : MonoBehaviour
     public event Action<Gun> ChangeProperty, RemoveThisGun;
     private int _ammoClip, _maxClip, _totalAmmo, _semiAutoFire, _autoFire, _arrayBullet, _idTypeSound;
     private bool singleFire;
-    private AudioClip _shootSound;
-    private AudioClip _reloadSound;
-    private AudioClip _emptySound;
     private string _name;
 
     private List<MyToggle> rof = new List<MyToggle>();
-    private bool isFiring;
+    private bool _isFiring;
+    private AudioManager _audioManager;
 
     public string Name => _name;
 
@@ -57,7 +55,7 @@ public class Gun : MonoBehaviour
         _buttonConfirmAddAmmo.onClick.RemoveAllListeners();
     }
 
-    public void Initialize(SaveLoadGun loadGun, GunSounds gunSounds)
+    public void Initialize(SaveLoadGun loadGun)
     {
         gameObject.SetActive(true);
         nameText.text = loadGun.name;
@@ -66,9 +64,6 @@ public class Gun : MonoBehaviour
         _maxClip = loadGun.maxClip;
         _semiAutoFire = loadGun.semiAutoFire;
         _autoFire = loadGun.autoFire;
-        _shootSound = gunSounds.Shoot;
-        _reloadSound = gunSounds.Reload;
-        _emptySound = gunSounds.Empty;
         _ammoClip = this._maxClip;
         _idTypeSound = loadGun.type;        
         singleFire = loadGun.singleFire;
@@ -97,7 +92,7 @@ public class Gun : MonoBehaviour
         ChangeProperty?.Invoke(this);
     }
 
-    public void Initialize(SaveLoadGunUsed loadGun, GunSounds gunSounds)
+    public void Initialize(SaveLoadGunUsed loadGun)
     {
         gameObject.SetActive(true);
         nameText.text = loadGun.name;
@@ -106,9 +101,6 @@ public class Gun : MonoBehaviour
         _maxClip = loadGun.maxClip;
         _semiAutoFire = loadGun.semiAutoFire;
         _autoFire = loadGun.autoFire;
-        _shootSound = gunSounds.Shoot;
-        _reloadSound = gunSounds.Reload;
-        _emptySound = gunSounds.Empty;
         _ammoClip = loadGun.clip;
         
         singleFire = loadGun.singleFire;
@@ -137,6 +129,8 @@ public class Gun : MonoBehaviour
         UpdateText();
     }
 
+    public void SetAudioManager(AudioManager audioManager) => _audioManager = audioManager;
+
     public void DestroyView() => Destroy(gameObject);
 
     private void Reload()
@@ -145,25 +139,25 @@ public class Gun : MonoBehaviour
         {
             _totalAmmo -= _maxClip;
             _ammoClip = _maxClip;
-            PlaySound(_reloadSound);
+            _audioManager.PlayReload(_idTypeSound);
         }
         else if(_ammoClip > 0 && _maxClip <= _totalAmmo)
         {
             _totalAmmo -= (_maxClip - _ammoClip);
             _ammoClip = _maxClip;
-            PlaySound(_reloadSound);
+            _audioManager.PlayReload(_idTypeSound);
         }
         else if(_totalAmmo > 0 && _maxClip - _ammoClip <= _totalAmmo)
         {
             _totalAmmo -= (_maxClip - _ammoClip);
-            _ammoClip = _maxClip;            
-            PlaySound(_reloadSound);
+            _ammoClip = _maxClip;
+            _audioManager.PlayReload(_idTypeSound);
         }
         else if(_totalAmmo > 0)
         {
             _ammoClip = _totalAmmo;
             _totalAmmo = 0;
-            PlaySound(_reloadSound);
+            _audioManager.PlayReload(_idTypeSound);
         }
         UpdateText();
         ChangeProperty?.Invoke(this);
@@ -171,22 +165,11 @@ public class Gun : MonoBehaviour
 
     private void Shoot()
     {
-        if (!isFiring)
+        if (!_isFiring)
         {
             _arrayBullet = toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<MyToggle>().Id;
-            isFiring = true;
-            if (_arrayBullet == _semiAutoFire)
-            {
-                InvokeRepeating("ShootSound", 0.1f, 0.16f);
-            }
-            else if (_arrayBullet == _autoFire)
-            {
-                InvokeRepeating("ShootSound", 0.1f, 0.13f);
-            }
-            else
-            {
-                InvokeRepeating("ShootSound", 0.1f, 0.16f);
-            }
+            _isFiring = true;
+            StartCoroutine(Shooting(_arrayBullet));
         }      
     }
 
@@ -196,34 +179,28 @@ public class Gun : MonoBehaviour
         totalAmmoText.text = $"{_totalAmmo}";
     }
 
-    private void ShootSound()
+    IEnumerator Shooting(int bulletsToShoot)
     {
-        if (_ammoClip == 0 || _arrayBullet == 0)
+        float timeDelay = 1.5f / bulletsToShoot;
+        Debug.Log($"timeDelay = {timeDelay}");
+        for(int i = 0; i < bulletsToShoot; i++)
         {
-            CancelInvoke();
             if(_ammoClip == 0)
             {
-                PlaySound(_emptySound);
+                i = bulletsToShoot;
+                _audioManager.PlayEmpty(_idTypeSound);
             }
-            Invoke("StopFiring", _shootSound.length);
-            ChangeProperty?.Invoke(this);
-        }
-        else
-        {
-            PlaySound(_shootSound);
-            _ammoClip--;
-            _arrayBullet--;
-            UpdateText();
+            else
+            {
+                _ammoClip--;
+                UpdateText();
+                _audioManager.PlayShoot(_idTypeSound);
+            }
+            yield return new WaitForSeconds(timeDelay);
         }
         
-    }
-
-    private void PlaySound(AudioClip clip)
-    {
-        AudioSource audio = gameObject.AddComponent<AudioSource>();
-        audio.clip = clip;
-        audio.Play();
-        Destroy(audio, 2f);
+        ChangeProperty?.Invoke(this);
+        _isFiring = false;
     }
 
     private void ShowAddAmmo() => panelWithAmmo.SetActive(true);
@@ -244,7 +221,5 @@ public class Gun : MonoBehaviour
     }
 
     private void RemovePressed() => RemoveThisGun?.Invoke(this);
-
-    private void StopFiring() => isFiring = false;
     
 }

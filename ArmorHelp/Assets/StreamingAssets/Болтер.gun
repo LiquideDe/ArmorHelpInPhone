@@ -1,0 +1,9 @@
+{
+    "name": "Болтер",
+    "maxClip": 30,
+    "semiAutoFire": 3,
+    "autoFire": 4,
+    "type": 4,
+    "totalClips": 4,
+    "singleFire": true
+}

@@ -5,6 +5,7 @@ public class PrefabHolder : ScriptableObject
 {
     [SerializeField] GameObject _armorPrefab, _arsenalPrefab, _damageParametersPanelPrefab, _panelTextDamage, _listWithGuns, _newGunPanel, _qrScanner;
     [SerializeField] GameObject _ballisticModifier, _weaponModifier;
+    [SerializeField] GameObject _armorForm, _weaponForm, _equipmentForm, _shop;
 
     public GameObject Get(TypeScene typeScene)
     {
@@ -36,6 +37,18 @@ public class PrefabHolder : ScriptableObject
 
             case TypeScene.WeaponModifier:
                 return _weaponModifier;
+
+            case TypeScene.ArmorForm:
+                return _armorForm;
+
+            case TypeScene.WeaponForm:
+                return _weaponForm;
+
+            case TypeScene.EquipmentForm:
+                return _equipmentForm;
+
+            case TypeScene.Shop:
+                return _shop;
 
             default:
                 throw new System.Exception($"Нет такого типа сцены {typeScene}");

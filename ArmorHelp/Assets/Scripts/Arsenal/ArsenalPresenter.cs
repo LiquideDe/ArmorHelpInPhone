@@ -11,6 +11,7 @@ public class ArsenalPresenter : IPresenter
     public event Action AddNewGunDown;
     public event Action CalculateBallisticModifiersDown;
     public event Action CalculateWeaponModifiersDown;
+    public event Action GotToShop;
     private ArsenalView _view;
     private AudioManager _audioManager;
     private GunHolder _gunFactory;
@@ -38,6 +39,7 @@ public class ArsenalPresenter : IPresenter
     {
         ShowArsenal();
         Gun gun= _gunFactory.Get(loadGun);
+        gun.SetAudioManager(_audioManager);
         gun.ChangeProperty += SaveGunWithChanges;
         gun.RemoveThisGun += RemoveThisGun;
         _view.AddGun(gun);
@@ -76,6 +78,7 @@ public class ArsenalPresenter : IPresenter
         foreach(SaveLoadGunUsed gunUsed in guns)
         {
             Gun gun = _gunFactory.Get(gunUsed);
+            gun.SetAudioManager(_audioManager);
             gun.ChangeProperty += SaveGunWithChanges;
             gun.RemoveThisGun += RemoveThisGun;
             _view.AddGun(gun);
@@ -133,6 +136,14 @@ public class ArsenalPresenter : IPresenter
         _view.CalculateModifiersBallistic += CalculateBallisticModifiers;
         _view.ReturnToArmor += ReturnToArmor;
         _view.CalculateModifiersWeapon += CalculateWeaponModifiers;
+        _view.GoToShop += Shop;
+    }
+
+    private void Shop()
+    {
+        _audioManager.PlayClick();
+        _view.gameObject.SetActive(false);
+        GotToShop?.Invoke();
     }
 
     private void Unscribe()

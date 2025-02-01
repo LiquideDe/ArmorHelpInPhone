@@ -13,10 +13,16 @@ MonoBehaviour:
   m_Name: GunFactory
   m_EditorClassIdentifier: 
   gunSounds:
-  - {fileID: 11400000, guid: aac897b32943a184985944ed83680558, type: 2}
-  - {fileID: 11400000, guid: 2d4828e1ef53546489bb003b820af7ad, type: 2}
-  - {fileID: 11400000, guid: d3f845062e1eab046935cfd2a9eb662b, type: 2}
-  - {fileID: 11400000, guid: 308c0ca1c6a754041984f22bc4551e05, type: 2}
-  - {fileID: 11400000, guid: a3495b5cdc195ae4a9c3cf6282497bd1, type: 2}
-  - {fileID: 11400000, guid: dd907f8709879cb459b3ce0bb7f87dd2, type: 2}
+  - {fileID: 11400000, guid: fdb548cb2b34bf64ba88006c8b428829, type: 2}
+  - {fileID: 11400000, guid: 011e682e6e03981468d2cbb4926e799e, type: 2}
+  - {fileID: 11400000, guid: d0ffd514fa9cd38408032cf472c60aed, type: 2}
+  - {fileID: 11400000, guid: 9bf752456e681034589ddad8e046784d, type: 2}
+  - {fileID: 11400000, guid: ae2942184878ad14d842e4a757e0ee04, type: 2}
+  - {fileID: 11400000, guid: 025d911a449e71f4597386550c11d52a, type: 2}
+  - {fileID: 11400000, guid: 791bd46250734ff4eb03a8ea75f680b4, type: 2}
+  - {fileID: 11400000, guid: d7912b7e71571eb478769b85ff3566b3, type: 2}
+  - {fileID: 11400000, guid: d9dc5f3530f27b2489b30783e642dd62, type: 2}
+  - {fileID: 11400000, guid: c6377d1f55a9624429682596eb89b85c, type: 2}
+  - {fileID: 11400000, guid: 8e32db0f090b29247a3f03103b54e4d9, type: 2}
+  - {fileID: 11400000, guid: 5b3b7b567fc51394f9d9bfa5fc520701, type: 2}
   _gunPrefab: {fileID: 8630186422930789876, guid: db45df65ca15921409eaf84fb9c2f896, type: 3}

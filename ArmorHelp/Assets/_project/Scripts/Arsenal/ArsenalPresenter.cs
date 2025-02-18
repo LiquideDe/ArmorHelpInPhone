@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -37,10 +38,12 @@ namespace ArmorHelp
 
         public void ShowArsenal() => _view.gameObject.SetActive(true);
 
-        public void AddGun(SaveLoadGun loadGun)
+        public void AddGun(SaveLoadGun loadGun, bool isShowArsenal = true)
         {
-            ShowArsenal();
-            Gun gun = _gunFactory.Get(loadGun);
+            if(isShowArsenal)
+                ShowArsenal();
+            Gun gun = _view.GetGun();
+            gun.Initialize(loadGun);
             gun.SetAudioManager(_audioManager);
             gun.ChangeProperty += SaveGunWithChanges;
             gun.RemoveThisGun += RemoveThisGun;
@@ -78,7 +81,8 @@ namespace ArmorHelp
 
             foreach (SaveLoadGunUsed gunUsed in guns)
             {
-                Gun gun = _gunFactory.Get(gunUsed);
+                Gun gun = _view.GetGun();
+                gun.Initialize(gunUsed);
                 gun.SetAudioManager(_audioManager);
                 gun.ChangeProperty += SaveGunWithChanges;
                 gun.RemoveThisGun += RemoveThisGun;

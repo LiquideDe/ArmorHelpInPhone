@@ -8,6 +8,7 @@ namespace ArmorHelp
     {
         [SerializeField] Button _buttonAddWeapon, _buttonReturnToArmor, _buttonCalculateModifiersBallistic, _buttonCalculateModifiersWeapon, _buttonShop;
         [SerializeField] Transform _content;
+        [field: SerializeField] public Gun gunPrefab { get; private set; }
 
         public event Action AddNewGun;
         public event Action ReturnToArmor;
@@ -34,6 +35,8 @@ namespace ArmorHelp
         }
 
         public void AddGun(Gun gun) => gun.transform.SetParent(_content);
+
+        public Gun GetGun() => Instantiate(gunPrefab, _content);
 
         private void ReturnToArmorPressed() => ReturnToArmor?.Invoke();
 

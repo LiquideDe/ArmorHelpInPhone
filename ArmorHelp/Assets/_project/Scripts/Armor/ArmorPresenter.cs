@@ -53,12 +53,13 @@ namespace ArmorHelp
 
                 _view.InputArmorLeftLeg.text = strings[12];
                 _view.InputTotalLeftLeg.text = strings[13];
-                if (strings.Count >= 15)
+                if(strings.Count >= 15)
                 {
                     int.TryParse(strings[14], out int wounds);
                     _view.SetWound(wounds);
                 }
                 ParseInputs();
+
             }
             else
                 Debug.Log($"Не прочитал {data}");

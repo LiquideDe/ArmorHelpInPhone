@@ -1,9 +1,10 @@
-using System;
 
-[Serializable]
-public class JSONRangeReader 
+namespace ArmorHelp
 {
-    public string name, description, weaponClass, rof, damage, reload, properties, rarity, typeEquipment;
-    public int range, penetration, clip, amount;
-    public float weight;
+    public class JSONRangeReader : JSONEquipmentReader
+    {
+        public string weaponClass, rof, damage, reload, properties;
+        public int range, penetration, clip, typeSound;
+    }
 }
+

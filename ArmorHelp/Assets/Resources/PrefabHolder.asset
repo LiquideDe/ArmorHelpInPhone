@@ -25,3 +25,4 @@ MonoBehaviour:
   _weaponForm: {fileID: 3362863863503296531, guid: 8dc3b47eb20499e4c939f238441db641, type: 3}
   _equipmentForm: {fileID: 4983069738741513603, guid: e6e95c28f09de0d41afac846f8608ca3, type: 3}
   _shop: {fileID: 5062194029850834193, guid: eb8038f86fb2cf6489c0ef2efe9e2a7a, type: 3}
+  _loadCharactersList: {fileID: 6230285584946097763, guid: ae0f81d68c5b6ce44881611a181bd3b4, type: 3}

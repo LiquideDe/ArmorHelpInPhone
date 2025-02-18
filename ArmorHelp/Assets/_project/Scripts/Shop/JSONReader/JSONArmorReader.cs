@@ -1,9 +1,11 @@
-using System;
 
-[Serializable]
-public class JSONArmorReader 
+
+namespace ArmorHelp
 {
-    public string name, description, descriptionArmor, rarity, typeEquipment;
-    public int head, hands, body, legs, maxAgility, armorPoint, amount;
-    public float weight;
+    public class JSONArmorReader : JSONEquipmentReader
+    {
+        public string descriptionArmor;
+        public int head, hands, body, legs, maxAgility, armorPoint;
+    }
 }
+

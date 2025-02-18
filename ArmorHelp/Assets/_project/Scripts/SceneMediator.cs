@@ -15,11 +15,13 @@ namespace ArmorHelp
         private ArsenalPresenter _arsenalPresenter;
         private BallisticModifiersPresenter _ballisticPresenter;
         private WeaponModifierPresenter _weaponPresenter;
+        private AudioManager _audioManager;
 
-        public SceneMediator(PresenterFactory presenterFactory, ViewFactory viewFactory)
+        public SceneMediator(PresenterFactory presenterFactory, ViewFactory viewFactory, AudioManager audioManager)
         {
             _presenterFactory = presenterFactory;
             _viewFactory = viewFactory;
+            _audioManager = audioManager;
         }
 
         public void Initialize()
@@ -37,7 +39,6 @@ namespace ArmorHelp
             _arsenalPresenter.AddNewGunDown += ShowListGunPanel;
             _arsenalPresenter.CalculateBallisticModifiersDown += ShowBallisticModifiers;
             _arsenalPresenter.CalculateWeaponModifiersDown += ShowWeaponModifiers;
-            _arsenalPresenter.GotToShop += ShowQrScannerJson;
             _arsenalPresenter.Initialize(arsenalView);
         }
 
@@ -68,12 +69,12 @@ namespace ArmorHelp
             ListWithNewGunsPresenter newGunsPresenter = (ListWithNewGunsPresenter)_presenterFactory.Get(TypeScene.ListWithGuns);
             newGunsPresenter.Close += ShowArsenal;
             newGunsPresenter.OpenCreationPanel += ShowCreationGunPanel;
-            newGunsPresenter.OpenQr += ShowQrScannerGun;
             newGunsPresenter.SetThisGun += SetGun;
             newGunsPresenter.Initialize(listView);
         }
 
         private void SetGun(SaveLoadGun gun) => _arsenalPresenter.AddGun(gun);
+        private void SetGunHidden(SaveLoadGun gun) => _arsenalPresenter.AddGun(gun, false);
 
 
         private void ShowCreationGunPanel()
@@ -167,11 +168,13 @@ namespace ArmorHelp
 
         private void ShowQrScannerArmor()
         {
-            QRScanner qRScanner = _viewFactory.Get(TypeScene.QrScanner).GetComponent<QRScanner>();
-            QRScannerPresenter scannerPresenter = (QRScannerPresenter)_presenterFactory.Get(TypeScene.QrScanner);
-            scannerPresenter.CloseQr += ShowArmor;
-            scannerPresenter.ReturnValue += _armorPresenter.LoadDataFromQr;
-            scannerPresenter.Initialize(qRScanner);
+            ListCharacterView view = _viewFactory.Get( TypeScene.LoadCharactersList).GetComponent<ListCharacterView>();
+
+            ListCharacterPresenter presenter = new ListCharacterPresenter(_audioManager, view);
+            presenter.Close += ShowArmor;
+            presenter.FillArmor += _armorPresenter.LoadDataFromQr;
+            presenter.CreateGun += SetGunHidden;
+
         }
     }
 }

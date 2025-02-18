@@ -14,7 +14,8 @@ namespace ArmorHelp
         Shop,
         ArmorForm,
         WeaponForm,
-        EquipmentForm
+        EquipmentForm,
+        LoadCharactersList
     }
 }
 

@@ -7,7 +7,7 @@ namespace ArmorHelp
     {
         [SerializeField] GameObject _armorPrefab, _arsenalPrefab, _damageParametersPanelPrefab, _panelTextDamage, _listWithGuns, _newGunPanel, _qrScanner;
         [SerializeField] GameObject _ballisticModifier, _weaponModifier;
-        [SerializeField] GameObject _armorForm, _weaponForm, _equipmentForm, _shop;
+        [SerializeField] GameObject _armorForm, _weaponForm, _equipmentForm, _shop, _loadCharactersList;
 
         public GameObject Get(TypeScene typeScene)
         {
@@ -51,6 +51,9 @@ namespace ArmorHelp
 
                 case TypeScene.Shop:
                     return _shop;
+
+                case TypeScene.LoadCharactersList:
+                    return _loadCharactersList;
 
                 default:
                     throw new System.Exception($"Нет такого типа сцены {typeScene}");

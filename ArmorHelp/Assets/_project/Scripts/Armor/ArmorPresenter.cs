@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 namespace ArmorHelp
 {
@@ -58,7 +59,7 @@ namespace ArmorHelp
                     int.TryParse(strings[14], out int wounds);
                     _view.SetWound(wounds);
                 }
-                ParseInputs();
+                _view.StartCoroutine(TakePauseAndParse());                
             }
             else
                 Debug.Log($"Не прочитал {data}");
@@ -404,6 +405,12 @@ namespace ArmorHelp
         {
             _audioManager.PlayClick();
             ScanArmorQr?.Invoke();
+        }
+
+        private IEnumerator TakePauseAndParse()
+        {
+            yield return new WaitForSeconds(0.2f);
+            ParseInputs();
         }
     }
 

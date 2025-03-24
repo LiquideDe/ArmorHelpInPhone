@@ -11,7 +11,7 @@ namespace ArmorHelp
         [SerializeField] TMP_InputField _inputBonusWP;
         [SerializeField] TMP_InputField _inputArmorHead, _inputArmorLeftHand, _inputArmorRightHand, _inputArmorBody, _inputArmorRightLeg, _inputArmorLeftLeg;
         [SerializeField] TMP_InputField _inputTotalHead, _inputTotalLeftHand, _inputTotalRightHand, _inputTotalBody, _inputTotalRightLeg, _inputTotalLeftLeg, _inputShelterPoint;
-        [SerializeField] TextMeshProUGUI _textWound;
+        [field: SerializeField] public TextMeshProUGUI TextWound { get;private set; }
         [SerializeField] Image _backgroundHead, _backgroundBody, _backgroundRightHand, _backgroundLeftHand, _backgroundRightLeg, _backgroundLeftLeg;
         [SerializeField] Sprite _nonActive;
         [SerializeField] Sprite _activeSmall;
@@ -171,10 +171,10 @@ namespace ArmorHelp
             _inputArmorRightLeg.text = armor.rightLegArmor.ToString();
             _inputArmorLeftLeg.text = armor.leftLegArmor.ToString();
             _inputBonusWP.text = armor.bWillPower.ToString();
-            _textWound.text = $"{armor.wounds}";
+            TextWound.text = $"{armor.wounds}";
         }
 
-        public void SetWound(int wound) => _textWound.text = $"{wound}";
+        public void SetWound(int wound) => TextWound.text = $"{wound}";
 
         private void MinusWoundPressed() => MinusWound?.Invoke();
         private void PlusWoundPressed() => PlusWound?.Invoke();

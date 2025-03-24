@@ -195,6 +195,7 @@ namespace ArmorHelp
             int.TryParse(_view.InputTotalLeftLeg.text, out int leftLegTotal);
             int.TryParse(_view.InputTotalRightHand.text, out int rightHandTotal);
             int.TryParse(_view.InputTotalRightLeg.text, out int rightLegTotal);
+            int.TryParse(_view.TextWound.text, out int wounds);
 
             if (_character.IsHeadSheltered)
             {
@@ -246,6 +247,7 @@ namespace ArmorHelp
             _character.RightHandTotal = rightHandTotal;
             _character.RightLegTotal = rightLegTotal;
             _character.ShelterArmorPoint = shelterPoint;
+            _character.Wounds = wounds;
         }
 
         private void SaveArmor()
